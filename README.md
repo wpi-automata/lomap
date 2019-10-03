@@ -42,8 +42,8 @@ Linux (Ubuntu)
     pip install six
     pip install matplotlib
     pip install numpy
-    sudo apt install python-tk
-    pip install networkx==1.11
+    apt-get install python-tk
+    pip install networkx
     pip install pyyaml
     pip install pp # Optional
     apt install cmake
