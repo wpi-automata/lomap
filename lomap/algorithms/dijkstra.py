@@ -83,7 +83,7 @@ def subset_to_subset_dijkstra_path_value(source_set, G, target_set,
 				# Don't allow degenerate paths
 				# Add all neighbors of source to start the algorithm
 				seen = dict()
-				for _, w, edgedata in G.edges_iter([source], data=True):
+				for _, w, edgedata in G.edges([source], data=True):
 					vw_dist = edgedata[weight_key]
 					seen[w] = vw_dist
 					heapq.heappush(fringe,(vw_dist,w))
@@ -95,8 +95,13 @@ def subset_to_subset_dijkstra_path_value(source_set, G, target_set,
 					continue # Already searched this node.
 
 				dist[v] = d	# Update distance to this node
+<<<<<<< HEAD
 
 				for _, w, edgedata in G.edges_iter([v], data=True):
+=======
+	
+				for _, w, edgedata in G.edges([v], data=True):
+>>>>>>> 4e5427b (converted from networkx 1.1 to 2.2)
 					vw_dist = dist[v] + edgedata[weight_key]
 					if w in dist:
 						if vw_dist < dist[w]:
@@ -135,7 +140,7 @@ def subset_to_subset_dijkstra_path_value(source_set, G, target_set,
 				# Don't allow degenerate paths
 				# Add all neighbors of source to start the algorithm
 				seen = dict()
-				for _, w, edgedata in G.edges_iter([source], data=True):
+				for _, w, edgedata in G.edges([source], data=True):
 					vw_dist = edgedata[weight_key]
 					seen[w] = (vw_dist,vw_dist)
 					heapq.heappush(fringe,(vw_dist,vw_dist,w))
@@ -147,8 +152,13 @@ def subset_to_subset_dijkstra_path_value(source_set, G, target_set,
 					continue # Already searched this node.
 
 				dist[v] = (d_bot,d_sum)	# Update distance to this node
+<<<<<<< HEAD
 
 				for _, w, edgedata in G.edges_iter([v], data=True):
+=======
+	
+				for _, w, edgedata in G.edges([v], data=True):
+>>>>>>> 4e5427b (converted from networkx 1.1 to 2.2)
 					vw_dist_bot = max(dist[v][0],edgedata[weight_key])
 					vw_dist_sum = dist[v][1] + edgedata[weight_key]
 					if w in dist:
@@ -228,7 +238,7 @@ def dijkstra_to_all(G, source, degen_paths = False, weight_key='weight'):
 		# Add all neighbors of source to start the algorithm
 		paths = dict()
 		seen = dict()
-		for _, w, edgedata in G.edges_iter([source], data=True):
+		for _, w, edgedata in G.edges([source], data=True):
 			vw_dist = edgedata[weight_key]
 			paths[w] = [source, w]
 			seen[w] = vw_dist
@@ -242,7 +252,11 @@ def dijkstra_to_all(G, source, degen_paths = False, weight_key='weight'):
 
 		dist[v] = d	# Update distance to this node
 
+<<<<<<< HEAD
 		for _, w, edgedata in G.edges_iter([v], data=True):
+=======
+		for w, edgedata in G.edges([v], data=True):
+>>>>>>> 4e5427b (converted from networkx 1.1 to 2.2)
 			vw_dist = dist[v] + edgedata[weight_key]
 			if w in dist:
 				if vw_dist < dist[w]:
@@ -329,8 +343,9 @@ def source_to_target_dijkstra(G, source, target, combine_fn='sum',
 			# Add all neighbors of source to start the algorithm
 			paths = dict()
 			seen = dict()
-			for _, w, edgedata in G.edges_iter([source], data=True):
-				vw_dist = edgedata[weight_key]
+			for _, w, edgedata in list(G.edges([source], data=True)):
+				#print("edgedata is ", edgedata)
+				vw_dist = edgedata['attr_dict'][weight_key]
 				paths[w] = [source, w]
 				seen[w] = vw_dist
 				heapq.heappush(fringe,(vw_dist,w))
@@ -345,8 +360,8 @@ def source_to_target_dijkstra(G, source, target, combine_fn='sum',
 			if v == target:
 				break	# Discovered path to target node
 
-			for _, w, edgedata in G.edges_iter([v], data=True):
-				vw_dist = dist[v] + edgedata[weight_key]
+			for _, w, edgedata in G.edges([v], data=True):
+				vw_dist = dist[v] + edgedata['attr_dict'][weight_key]
 				if cutoff is not None:
 					if vw_dist>cutoff:
 						continue	# Longer than cutoff, ignore this path
@@ -383,7 +398,7 @@ def source_to_target_dijkstra(G, source, target, combine_fn='sum',
 			# Add all neighbors of source to start the algorithm
 			paths = dict()
 			seen = dict()
-			for _, w, edgedata in G.edges_iter([source], data=True):
+			for _, w, edgedata in G.edges([source], data=True):
 				vw_dist = edgedata[weight_key]
 				paths[w] = [source, w]
 				seen[w] = (vw_dist, vw_dist)
@@ -399,7 +414,7 @@ def source_to_target_dijkstra(G, source, target, combine_fn='sum',
 			if v == target:
 				break	# Discovered path to target node
 
-			for _, w, edgedata in G.edges_iter([v], data=True):
+			for _, w, edgedata in G.edges([v], data=True):
 				vw_dist_bot = max(dist[v][0], edgedata[weight_key])
 				vw_dist_sum = dist[v][1] + edgedata[weight_key]
 				if cutoff is not None:
