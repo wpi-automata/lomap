@@ -198,7 +198,7 @@ def ts_times_fsa(ts, fsa, from_current=False, expand_finals=True,
     else:
         # Iterate over initial states of the TS
         for init_ts in ts.init:
-            init_prop = ts.g.node[init_ts].get('prop', set())
+            init_prop = ts.g.nodes[init_ts].get('prop', set())
             # Iterate over the initial states of the FSA
             for init_fsa in fsa.init:
                 # Add the initial states to the graph and mark them as initial
@@ -225,13 +225,13 @@ def ts_times_fsa(ts, fsa, from_current=False, expand_finals=True,
 
         for ts_next_state, weight, control in ts.next_states_of_wts(ts_state,
                                                      traveling_states=False):
-            ts_next_prop = ts.g.node[ts_next_state].get('prop', set())
+            ts_next_prop = ts.g.nodes[ts_next_state].get('prop', set())
             fsa_next_state = fsa.next_state(fsa_state, ts_next_prop)
             if fsa_next_state is not None:
                 # TODO: use process_product_transition instead
                 next_state = (ts_next_state, fsa_next_state)
                 if next_state not in product_model.g:
-                    next_prop = ts.g.node[ts_next_state].get('prop', set())
+                    next_prop = ts.g.nodes[ts_next_state].get('prop', set())
                     # Add the new state
                     next_state_data = get_state_data(next_state, prop=next_prop,
                                                      ts=ts, fsa=fsa)
@@ -269,7 +269,7 @@ def ts_times_buchi(ts, buchi):
     # Iterate over initial states of the TS
     init_states = []
     for init_ts in ts.init:
-        init_prop = ts.g.node[init_ts].get('prop',set())
+        init_prop = ts.g.nodes[init_ts].get('prop',set())
         # Iterate over the initial states of the FSA
         for init_buchi in buchi.init:
             # Add the initial states to the graph and mark them as initial
@@ -296,7 +296,7 @@ def ts_times_buchi(ts, buchi):
 
         for ts_next in ts.next_states_of_wts(ts_state, traveling_states=False):
             ts_next_state = ts_next[0]
-            ts_next_prop = ts.g.node[ts_next_state].get('prop',set())
+            ts_next_prop = ts.g.nodes[ts_next_state].get('prop',set())
             weight = ts_next[1]
             control = ts_next[2]
             for buchi_next_state in buchi.next_states(buchi_state,
@@ -306,7 +306,7 @@ def ts_times_buchi(ts, buchi):
                 #print "%s -%d-> %s" % (cur_state, weight, next_state)
 
                 if(next_state not in product_model.g):
-                    next_prop = ts.g.node[ts_next_state].get('prop',set())
+                    next_prop = ts.g.nodes[ts_next_state].get('prop',set())
 
                     # Add the new state
                     attr_dict = {'prop': next_prop,
@@ -350,8 +350,8 @@ def ts_times_ts(ts_tuple):
 
     # Props satisfied at init_state is the union of props
     # For each ts, get the prop of init state or empty set
-    init_prop = set.union(*[ts.g.node[ts_init].get('prop', set())
-                            for ts, ts_init in zip(ts_tuple, init_state)])
+    init_prop = set.union(*[ts.g.nodes[ts_init].get('prop', set())
+                              for ts, ts_init in it.izip(ts_tuple, init_state)])
 
     # Finally, add the state
     product_ts.g.add_node(init_state, {'prop': init_prop,
@@ -575,7 +575,7 @@ def ts_times_fsas(ts, fsa_tuple, from_current=None, expand_finals=True,
         else:
             ts_current = next(iter(ts.init))
         # Get the APs at the current TS state
-        prop_current = ts.g.node[ts_current].get('prop', set())
+        prop_current = ts.g.nodes[ts_current].get('prop', set())
         # Get current product FSA state
         pfsa_current = []
         for is_current, fsa in zip(from_current[1:], fsa_tuple):
@@ -600,7 +600,7 @@ def ts_times_fsas(ts, fsa_tuple, from_current=None, expand_finals=True,
     else:
         # Iterate over initial states of the TS
         for init_ts in ts.init:
-            init_prop = ts.g.node[init_ts].get('prop', set())
+            init_prop = ts.g.nodes[init_ts].get('prop', set())
             # Iterate over the initial states of the FSA
             for init_pfsa in it.product(*[fsa.init for fsa in fsa_tuple]):
                 # Add the initial states to the graph and mark them as initial
@@ -628,7 +628,7 @@ def ts_times_fsas(ts, fsa_tuple, from_current=None, expand_finals=True,
         for ts_next_state, _, _ in ts.next_states_of_wts(ts_state,
                                                      traveling_states=False):
             # Get the propositions satisfied at the next state
-            ts_next_prop = ts.g.node[ts_next_state].get('prop', set())
+            ts_next_prop = ts.g.nodes[ts_next_state].get('prop', set())
             # Get next product FSA state using the TS prop
             pfsa_next_state = tuple(fsa.next_state(fsa_state, ts_next_prop)
                         for fsa, fsa_state in zip(fsa_tuple, pfsa_state))
@@ -698,11 +698,11 @@ def markov_times_markov(markov_tuple):
     for init_state in it.product(*map(lambda m: m.init.keys(), markov_tuple)):
 
         # Find initial probability and propositions of this state
-        init_prob = reduce(lambda x, y: x * y,
-                   (m.init[s] for m, s in zip(markov_tuple, init_state)))
-        init_prop = reduce(lambda x, y: x | y,
-                   (m.g.node[s].get('prop', set())
-                    for m, s in zip(markov_tuple, init_state)))
+        init_prob = reduce(lambda x,y: x*y, list(map(lambda m, s: m.init[s],
+                                                markov_tuple, init_state)))
+        init_prop = reduce(lambda x,y: x|y,
+                           list(map(lambda m, s: m.g.nodes[s].get('prop',set()),
+                               markov_tuple, init_state)))
 
         flat_init_state = flatten_tuple(init_state)
 
@@ -813,8 +813,8 @@ def markov_times_fsa(markov, fsa):
     # Stack for depth first search
     stack = []
     # Iterate over initial states of the markov model
-    for init_markov in markov.init.keys():
-        init_prop = markov.g.node[init_markov].get('prop',set())
+    for init_markov in list(markov.init.keys()):
+        init_prop = markov.g.nodes[init_markov].get('prop',set())
         # Iterate over the initial states of the FSA
         for init_fsa in fsa.init.keys():
             # Add the initial states to the graph and mark them as initial
@@ -842,7 +842,7 @@ def markov_times_fsa(markov, fsa):
         for markov_next in markov.next_states_of_markov(markov_state,
                                                       traveling_states = False):
             markov_next_state = markov_next[0]
-            markov_next_prop = markov.g.node[markov_next_state]['prop']
+            markov_next_prop = markov.g.nodes[markov_next_state]['prop']
             weight = markov_next[1]
             control = markov_next[2]
             prob = markov_next[3]
@@ -853,7 +853,7 @@ def markov_times_fsa(markov, fsa):
                 #print "%s -%d-> %s" % (cur_state, weight, next_state)
 
                 if flat_next_state not in p.g:
-                    next_prop = markov.g.node[markov_next_state].get('prop',
+                    next_prop = markov.g.nodes[markov_next_state].get('prop',
                                                                      set())
 
                     # Add the new state

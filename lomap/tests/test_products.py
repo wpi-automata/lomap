@@ -17,8 +17,9 @@
 from __future__ import print_function
 
 import networkx as nx
-from networkx.utils import generate_unique_node
+# from networkx.utils import generate_unique_node
 import matplotlib.pyplot as plt
+import uuid
 
 from lomap.classes import Buchi, Ts
 from lomap.algorithms.product import ts_times_buchi
@@ -30,7 +31,8 @@ def policy_buchi_pa(pa, weight_label='weight'):
     if not pa.final:
         return float('Inf'), None
 
-    vinit = generate_unique_node()
+    # vinit = generate_unique_node()
+    vinit = str(uuid.uuid1())
     pa.g.add_node(vinit)
     pa.g.add_edges_from([(vinit, init, {weight_label: 0}) for init in pa.init])
 
