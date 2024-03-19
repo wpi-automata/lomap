@@ -1,6 +1,8 @@
 LTL Optimal Multi-Agent Planner (LOMAP)
 =======================================
 
+This repo is based on the following repository described below. It has been modified to support Python 3 and NetworkX 3.1.
+
 LTL Optimal Multi-Agent Planner (LOMAP) is a python package for automatic
 planning of optimal paths for multi-agent systems.
 See the directory 'examples' (either in the source archive or in the
@@ -13,13 +15,13 @@ Copyright (C) 2013-2020, Cristian-Ioan Vasile (cvasile@lehigh.edu,
 
 ## Installation Instructions
 
-Linux (Ubuntu)
+Linux (Ubuntu) -- using Anaconda
 1. Clone the _lomap_ repository
   * Navigate to desired location
   * Run the following line in shell:
 
   ```bash
-  git clone https://github.com/wasserfeder/lomap.git
+  git clone https://github.com/wpi-automata/lomap.git
   ```
 
 2. Install _Spot_ using Debian Packages (https://spot.lrde.epita.fr/install.html)
@@ -38,24 +40,10 @@ Linux (Ubuntu)
   * Run the following lines in shell:
 
     ```bash
-    sudo apt install python-pip
-    pip install six
-    pip install matplotlib
-    pip install numpy
-    apt-get install python-tk
-    pip install networkx
-    pip install pyyaml
-    pip install pp # Optional
-    apt install cmake
+    conda create --name <desired env name>
+    conda activate <desired env name>
+    conda install matplotlib networkx numpy pyyaml
     ```
-
-<<<<<<< HEAD
-  * Note: Ensure that Python 2.7 is installed.
-  * Note: If Python3, install matplotlib==2.2.3 in order to maintain compatibility with network 1.11
-  * Note: If Python3, there is not easy way to install `pp` package.
-=======
-  * Note: Ensure that Python 3 is installed.
->>>>>>> 8fe9267 (minor readMe updates)
 
 4. Download and unpack _ltl2dstar_
   * Download from: https://www.ltl2dstar.de/
@@ -121,27 +109,6 @@ Linux (Ubuntu)
    ```
   * Problem: Facing issue with compatibility between networkx 1.1 and 2.2
   * Solution: Navigate to file with error and delete the "_iter" portion
-
-
-## Todo List:
-
-- [ ] Port to _networkx_ 2.x
-- [x] Add support for Python 3.x
-- [x] Remove old Ts/Markov file format system, use _yaml_
-- [ ] Revise developer instructions, add more tests
-- [ ] Create more testing examples with instructions (docs)
-- [ ] Improve visualization
-- [ ] Add support for DFSCAs
-- [ ] Implement dfsa and dfsca minimization
-- [ ] Integrate logic minimization
-- [ ] Add Buchi/Rabin games
-- [ ] Sync with twtl, reactive-ltl, lvrmod, pvrp, gdtl-firm
-- [ ] Integrate GDTL and predicate system
-- [ ] Add more examples
-- [ ] Add RH/MPC framework
-- [ ] General clean-up of code
-- [ ] Test for functions and continuous integration system
-- [ ] BDDs for guards
 
 ## Copyright and Warranty Information
 
