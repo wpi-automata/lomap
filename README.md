@@ -32,7 +32,6 @@ Linux (Ubuntu) -- using Anaconda
     sudo sh -c "echo 'deb http://www.lrde.epita.fr/repo/debian/ stable/' >> /etc/apt/sources.list"
     sudo apt update
     sudo apt install spot libspot-dev spot-doc
-    sudo apt install python3-spot # For python3 support
     ```
 
 3. Install necessary dependencies:
