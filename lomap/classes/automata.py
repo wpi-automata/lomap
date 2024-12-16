@@ -106,6 +106,12 @@ Edges: {edges}
         """
         raise NotImplementedError
 
+    def from_file(self, file):
+        """
+        Creates an automaton in-place from a file.
+        """
+        raise NotImplementedError       
+
     def get_guard_bitmap(self, guard):
         """
         Creates the bitmaps from guard string. The guard is a boolean expression
@@ -326,6 +332,14 @@ class Buchi(Automaton):
 
         automaton_from_spin(self, formula, lines)
 
+    def from_file(self, file):
+        """
+        Creates a Buchi automaton in-place from the given LTL formula.
+        """
+        with open(file, 'r') as f:
+            lines = f.read()
+        formula = lines.split('*')[1]
+        automaton_from_spin(self, formula, lines)
 
 class Fsa(Automaton):
     """
