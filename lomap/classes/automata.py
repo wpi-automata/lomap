@@ -191,7 +191,7 @@ Edges: {edges}
         prop_bitmap = self.bitmap_of_props(props)
         # Return an array of next states
         nq = [v for _, v, d in self.g.out_edges(q, data=True)
-                                                   if prop_bitmap in d['input']]
+                                                   if prop_bitmap in d['attr_dict']['input']]
         assert len(nq) <= 1
         if nq:
             return nq[0]
@@ -214,7 +214,7 @@ Edges: {edges}
         '''
         word = []
         for state, next_state in zip(trajectory, trajectory[1:]):
-            symbol = next(iter(self.g[state][next_state]['input']))
+            symbol = next(iter(self.g[state][next_state]['attr_dict']['input']))
             symbol = set([prop for prop, enc in self.props.items()
                           if enc & symbol])
             word.append(symbol)
@@ -239,7 +239,7 @@ Edges: {edges}
         for state in self.g:
             for symbol in self.alphabet:
                 next_states = [v for v in self.g[state]
-                               if symbol in self.g[state][v]['input']]
+                               if symbol in self.g[state][v]['attr_dict']['input']]
                 if len(next_states) > 1:
                     return False
         return True
@@ -253,7 +253,7 @@ Edges: {edges}
         for s in self.g:
             rem_alphabet = set(self.alphabet)
             for _, _, d in self.g.out_edges(s, data=True):
-                rem_alphabet -= d['input']
+                rem_alphabet -= d['attr_dict']['input']
             if rem_alphabet:
                 if not trap_added: #'trap' not in self.g:
                     self.g.add_node('trap')
@@ -287,9 +287,9 @@ Edges: {edges}
         # update transitions and mark for deletion
         del_transitions = deque()
         for u, v, d in self.g.edges(data=True):
-            sym = d['input'] & symbols
+            sym = d['attr_dict']['input'] & symbols
             if sym:
-                d['input'] = sym
+                d['attr_dict']['input'] = sym
             else:
                 del_transitions.append((u, v))
         self.g.remove_edges_from(del_transitions)
@@ -493,8 +493,8 @@ class Fsa(Automaton):
         for state in det.g:
             ins = set()
             for _, _, d in det.g.out_edges(state, True):
-                assert len(d['input']) == 1
-                inp = next(iter(d['input']))
+                assert len(d['attr_dict']['input']) == 1
+                inp = next(iter(d['attr_dict']['input']))
                 if inp in ins:
                     assert False
                 ins.add(inp)
