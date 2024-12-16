@@ -1,0 +1,18 @@
+never { /* GFa & Fb */
+T0_init:
+  if
+  :: (!(b)) -> goto T0_init
+  :: ((a) && (b)) -> goto accept_S1
+  :: ((!(a)) && (b)) -> goto T0_S2
+  fi;
+accept_S1:
+  if
+  :: (a) -> goto accept_S1
+  :: (!(a)) -> goto T0_S2
+  fi;
+T0_S2:
+  if
+  :: (a) -> goto accept_S1
+  :: (!(a)) -> goto T0_S2
+  fi;
+}
