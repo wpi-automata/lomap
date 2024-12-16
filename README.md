@@ -25,6 +25,7 @@ Linux (Ubuntu) -- using Anaconda
   ```
 
 2. Install _Spot_ using Debian Packages (https://spot.lrde.epita.fr/install.html)
+  * NOTE: The following is not necessary for RBE 575!
   * Run the following lines in shell:
 
     ```bash
@@ -45,6 +46,7 @@ Linux (Ubuntu) -- using Anaconda
     ```
 
 4. Download and unpack _ltl2dstar_
+  * NOTE: The following is not necessary for RBE 575!
   * Download from: https://www.ltl2dstar.de/
   * Unpack _ltl2dstar_
   * Navigate to the _ltl2dstar_ folder
@@ -77,6 +79,11 @@ Linux (Ubuntu) -- using Anaconda
 
       ```bash
       echo 'export PYTHONPATH="${PYTHONPATH}:/path/to/lomap"' >> ~/.bashrc
+      ```
+
+  * NOTE: You can do this in conda using: 
+      ```bash
+      conda develop /path/to/lomap
       ```
 
 6. Test if the setup worked properly:
